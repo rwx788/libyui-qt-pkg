@@ -881,6 +881,9 @@ YQPackageSelector::addMenus()
     _extrasMenu->addAction( _( "Install All Matching &Recommended Packages" ),
                             this, SLOT( installRecommendedPkgs() ) );
 
+    _extrasMenu->addAction( _( "Install &System Recommended Packages (Drivers)" ),
+                            this, SLOT( installSystemRecommendedPkgs() ) );
+
     _extrasMenu->addSeparator();
 
     if ( _pkgConflictDialog )
@@ -1576,13 +1579,33 @@ YQPackageSelector::installRecommendedPkgs()
     }
 
     YQPkgChangesDialog::showChangesDialog( this,
-					   _( "Added Subpackages:" ),
+					   _( "Added Packages:" ),
 					   _( "&OK" ),
 					   QString::null,			// rejectButtonLabel
                                            YQPkgChangesDialog::FilterAutomatic,
 					   YQPkgChangesDialog::OptionNone );	// showIfEmpty
 }
 
+void
+YQPackageSelector::installSystemRecommendedPkgs()
+{
+    zypp::getZYpp()->resolver()->setIgnoreAlreadyRecommended( false );
+    zypp::getZYpp()->resolver()->setOnlyRequires( true );
+    resolveDependencies();
+
+    if ( _filters && _statusFilterView )
+    {
+	_filters->showPage( _statusFilterView );
+	_statusFilterView->filter();
+    }
+
+    YQPkgChangesDialog::showChangesDialog( this,
+					   _( "Added Packages:" ),
+					   _( "&OK" ),
+					   QString::null,			// rejectButtonLabel
+                                           YQPkgChangesDialog::FilterAutomatic,
+					   YQPkgChangesDialog::OptionNone );	// showIfEmpty
+}
 
 void
 YQPackageSelector::pkgExcludeDebugChanged( bool on )

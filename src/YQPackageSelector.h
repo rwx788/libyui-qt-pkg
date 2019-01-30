@@ -141,6 +141,13 @@ public slots:
     void installRecommendedPkgs();
 
     /**
+     * Install minimal recommended packages, similar to installRecommendedPkgs(),
+     * but this selects only the minimal set of packages (ususally the driver
+     * packages only)
+     **/
+    void installSystemRecommendedPkgs();
+
+    /**
      * Install any subpackage that ends with 'suffix' for packages that are
      * installed or marked for installation
      **/
